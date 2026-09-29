@@ -1,0 +1,479 @@
+<main class="relative pt-16 bg-surface min-h-screen px-gutter-lg py-margin" id="view-detalle">
+<div class="flex flex-col w-full">
+<!-- Micro Notification / Toast -->
+<div class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none flex items-center gap-space-sm bg-inverse-surface text-inverse-on-surface px-space-md py-space-sm rounded-xl shadow-xl font-label-md text-label-md" id="toastNotification">
+<span class="material-symbols-outlined text-tertiary-fixed-dim">check_circle</span>
+<span id="toastMsg">Acción procesada con éxito</span>
+</div>
+<!-- Reassign Modal Dialog -->
+<div class="fixed inset-0 z-50 hidden items-center justify-center bg-inverse-surface/40 backdrop-blur-sm transition-opacity" id="reassignModal">
+<div class="bg-surface-container-lowest rounded-full p-space-xl max-w-lg w-full shadow-2xl relative animate-scaleIn">
+<div class="flex items-center justify-between pb-space-sm">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-primary text-2xl">swap_horiz</span>
+<span class="font-headline-sm text-headline-sm text-on-surface font-semibold">Reasignar Carga de Trabajo</span>
+</div>
+<button class="w-8 h-8 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" onclick="closeReassignModal()" type="button">
+<span class="material-symbols-outlined text-lg">close</span>
+</button>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant pt-space-xs">
+        Transfiriendo tarea <span class="font-code-sm text-code-sm font-bold text-primary" id="modalTaskCode">#TK-402</span> asignada a <strong class="text-on-surface" id="reassign-modal-owner">Elena Ramos</strong>.
+      </p>
+<div class="my-space-md flex flex-col gap-space-sm">
+<label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-semibold">Seleccionar Ingeniero Receptor</label>
+<div class="flex flex-col gap-space-xs" id="reassign-users-list">
+<!-- DYNAMIC REASSIGN USERS -->
+</div>
+</div>
+<div class="flex items-center justify-end gap-space-sm pt-space-sm">
+<button class="px-space-md py-space-sm rounded-xl font-label-md text-label-md text-on-surface-variant hover:bg-surface-container transition-colors" onclick="closeReassignModal()" type="button">Cancelar</button>
+<button class="px-space-md py-space-sm rounded-xl font-label-md text-label-md bg-primary-container text-on-primary font-semibold shadow-sm hover:bg-primary transition-all" onclick="confirmReassign()" type="button">Confirmar Transferencia</button>
+</div>
+</div>
+</div>
+<!-- Breadcrumbs & Dynamic Meta -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm pb-space-md">
+<nav class="flex items-center gap-space-xs text-on-surface-variant font-label-md text-label-md">
+<a class="hover:text-primary transition-colors flex items-center gap-1" href="#" onclick="document.getElementById('nav-lista').click(); return false;">
+<span class="material-symbols-outlined text-base">group</span>
+<span>Usuarios</span>
+</a>
+<span class="text-outline-variant">/</span>
+<span class="text-on-surface font-semibold" id="detalle-breadcrumb-name">Elena Ramos</span>
+<span class="text-outline-variant">/</span>
+<span class="bg-surface-container-high text-on-surface-variant px-space-xs py-0.5 rounded-full font-label-sm text-label-sm font-medium">Asignaciones y Rendimiento</span>
+</nav>
+<div class="flex items-center gap-space-xs">
+<span class="flex h-2.5 w-2.5 relative">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-tertiary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-tertiary"></span>
+</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">Sincronizado vía Jira / GitLab Core</span>
+</div>
+</div>
+<!-- Executive Header Profile Card -->
+<section class="bg-surface-container-lowest rounded-full p-space-lg sm:p-space-xl shadow-sm mb-space-xl relative overflow-hidden">
+<div class="absolute -right-16 -top-16 w-64 h-64 bg-primary-fixed/30 rounded-full blur-3xl pointer-events-none"></div>
+<div class="absolute right-48 -bottom-20 w-56 h-56 bg-tertiary-fixed/20 rounded-full blur-2xl pointer-events-none"></div>
+<div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-space-xl">
+<!-- Member Identity Info -->
+<div class="flex flex-col sm:flex-row items-start sm:items-center gap-space-lg">
+<div class="relative">
+<div id="detalle-header-avatar" class="w-24 h-24 sm:w-28 sm:h-28 rounded-full flex items-center justify-center text-white font-headline-xl text-headline-xl font-bold shadow-sm ring-4 ring-surface-container bg-primary">ER</div>
+<span class="absolute bottom-1 right-1 w-4 h-4 bg-tertiary rounded-full ring-2 ring-surface-container-lowest" title="Estado: Activo - En línea"></span>
+</div>
+<div class="flex flex-col gap-space-xs">
+<div class="flex flex-wrap items-center gap-space-sm">
+<h1 class="font-headline-lg text-headline-lg text-on-surface font-bold tracking-tight" id="detalle-header-name">Elena Ramos</h1>
+<span class="bg-tertiary/10 text-tertiary font-label-sm text-label-sm px-space-sm py-0.5 rounded-full font-semibold flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span> Activo - En línea
+            </span>
+<span class="bg-surface-container-high text-on-secondary-container font-code-sm text-code-sm px-space-xs py-0.5 rounded-full" id="detalle-uid">UID-8821-TF</span>
+</div>
+<p class="font-label-md text-label-md text-primary font-semibold">Tech Lead &amp; Senior Full-Stack Engineer</p>
+<div class="flex flex-wrap items-center gap-x-space-md gap-y-1 font-body-sm text-body-sm text-on-surface-variant">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-base text-secondary">domain</span>
+              Ingeniería de Software &amp; Arquitectura
+            </span>
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-base text-secondary">mail</span>
+<span id="detalle-email-text">elena.ramos@taskflow.dev</span>
+            </span>
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-base text-secondary">phone</span>
+<span id="detalle-phone-text">Sin teléfono</span>
+            </span>
+</div>
+<!-- Skills Badges -->
+<div class="flex flex-wrap items-center gap-space-xs pt-space-xs">
+<span class="bg-surface-container text-on-surface font-label-sm text-label-sm px-space-sm py-0.5 rounded-full font-medium">React</span>
+<span class="bg-surface-container text-on-surface font-label-sm text-label-sm px-space-sm py-0.5 rounded-full font-medium">Node.js</span>
+<span class="bg-surface-container text-on-surface font-label-sm text-label-sm px-space-sm py-0.5 rounded-full font-medium">PostgreSQL</span>
+<span class="bg-surface-container text-on-surface font-label-sm text-label-sm px-space-sm py-0.5 rounded-full font-medium">Docker</span>
+<span class="bg-surface-container text-on-surface font-label-sm text-label-sm px-space-sm py-0.5 rounded-full font-medium">Microservicios</span>
+<span class="bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm px-space-xs py-0.5 rounded-full">+3 más</span>
+</div>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="flex flex-wrap items-center gap-space-sm lg:flex-col lg:items-end justify-start">
+<button id="btn-nueva-tarea" class="bg-primary-container text-on-primary font-label-md text-label-md px-space-md py-space-sm rounded-xl flex items-center gap-space-xs hover:bg-primary transition-all shadow-sm" type="button">
+<span class="material-symbols-outlined text-lg">add_task</span>
+<span id="detalle-btn-asignar-txt">+ Asignar Nueva Tarea a Elena</span>
+</button>
+<div class="flex items-center gap-space-xs w-full lg:w-auto">
+<button class="flex-1 lg:flex-initial bg-surface-container-low text-on-surface hover:bg-surface-container font-label-md text-label-md px-space-md py-space-sm rounded-xl flex items-center justify-center gap-space-xs transition-colors" onclick="openReassignModal('MULTIPLE')" type="button">
+<span class="material-symbols-outlined text-lg">sync_alt</span>
+<span>Reasignar Tareas</span>
+</button>
+<button id="btn-editar-usuario" class="flex-1 lg:flex-initial bg-surface-container-low text-on-surface hover:bg-surface-container font-label-md text-label-md px-space-md py-space-sm rounded-xl flex items-center justify-center gap-space-xs transition-colors" type="button">
+<span class="material-symbols-outlined text-lg">edit</span>
+<span>Editar Perfil</span>
+</button>
+</div>
+</div>
+</div>
+<!-- User KPI Metrics Bar -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-space-md mt-space-lg pt-space-lg bg-surface-container-low/60 rounded-xl p-space-md">
+<!-- Metric 1: Workload -->
+<div class="flex flex-col gap-1">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-primary text-base">speed</span>
+          Carga de Trabajo
+        </span>
+<div class="flex items-baseline gap-space-xs">
+<span class="font-headline-md text-headline-md text-on-surface font-bold" id="kpi-workload">88%</span>
+<span class="font-label-sm text-label-sm text-tertiary font-semibold">(Capacidad óptima)</span>
+</div>
+<div class="w-full bg-surface-container-high h-1.5 rounded-full overflow-hidden mt-1">
+<div class="bg-primary-container h-full rounded-full transition-all" id="kpi-workload-bar" style="width: 88%"></div>
+</div>
+</div>
+<!-- Metric 2: Active Tasks breakdown -->
+<div class="flex flex-col gap-1">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-secondary text-base">fact_check</span>
+          Tareas Activas
+        </span>
+<div class="flex items-baseline gap-space-xs">
+<span class="font-headline-md text-headline-md text-on-surface font-bold" id="kpi-active-tasks">9</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">en sprint</span>
+</div>
+<div class="flex items-center gap-space-xs font-label-sm text-label-sm">
+<span class="text-error font-medium" id="kpi-urgentes">2 Urgentes</span>
+<span class="text-outline-variant">•</span>
+<span class="text-on-surface-variant font-medium" id="kpi-en-curso">4 En curso</span>
+<span class="text-outline-variant">•</span>
+<span class="text-tertiary font-medium">0 En rev.</span>
+</div>
+</div>
+<!-- Metric 3: Historical Completed -->
+<div class="flex flex-col gap-1">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-tertiary text-base">task_alt</span>
+          Completadas Históricas
+        </span>
+<div class="flex items-baseline gap-space-xs">
+<span class="font-headline-md text-headline-md text-on-surface font-bold" id="kpi-completed-tasks">142</span>
+<span class="font-body-sm text-body-sm text-tertiary font-semibold">Top 5% del equipo</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">24 tickets resueltos este ciclo</span>
+</div>
+<!-- Metric 4: On-time rate -->
+<div class="flex flex-col gap-1">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-tertiary text-base">verified</span>
+          Tasa Entrega a Tiempo
+        </span>
+<div class="flex items-baseline gap-space-xs">
+<span class="font-headline-md text-headline-md text-on-surface font-bold">98%</span>
+<span class="font-label-sm text-label-sm text-tertiary font-semibold">+2.4% vs promedio</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">SLA Enterprise garantizado</span>
+</div>
+</div>
+</section>
+<!-- 2-Column Work Engine Layout: Main (70%) + Sidebar (30%) -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-xl items-start">
+<!-- LEFT MAIN WORKSPACE (lg:col-span-8 ≈ 70%) -->
+<section class="lg:col-span-8 flex flex-col gap-space-lg">
+<!-- Interactive Tab Bar & Filter Controls -->
+<div class="bg-surface-container-lowest rounded-full p-space-md shadow-sm">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-md pb-space-sm">
+<!-- Navigation Tabs -->
+<div class="flex items-center gap-space-xs overflow-x-auto scrollbar-none" id="tabContainer">
+<button class="tab-btn px-space-md py-space-xs rounded-xl font-label-md text-label-md font-semibold bg-primary-container text-on-primary transition-all shadow-sm" onclick="switchTab(this, 'assigned')" type="button" id="tab-assigned-count">
+              Tareas Asignadas (9)
+            </button>
+<button class="tab-btn px-space-md py-space-xs rounded-xl font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low transition-all" onclick="switchTab(this, 'timeline')" type="button">
+              Línea de Tiempo / Sprint
+            </button>
+<button class="tab-btn px-space-md py-space-xs rounded-xl font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low transition-all" onclick="switchTab(this, 'history')" type="button">
+              Historial Completado (142)
+            </button>
+<button class="tab-btn px-space-md py-space-xs rounded-xl font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low transition-all" onclick="switchTab(this, 'notes')" type="button">
+              Notas de Rendimiento
+            </button>
+</div>
+<!-- Quick Search Filter -->
+<div class="flex items-center bg-surface-container-low px-space-sm py-1 rounded-xl">
+<span class="material-symbols-outlined text-secondary text-base mr-1">filter_list</span>
+<input class="bg-transparent text-on-surface font-body-sm text-body-sm outline-none w-36 placeholder:text-on-surface-variant" id="taskSearchInput" onkeyup="filterTasks()" placeholder="Filtrar tareas..." type="text"/>
+</div>
+</div>
+<!-- Secondary Batch Control Line -->
+<div class="flex items-center justify-between pt-space-xs text-on-surface-variant font-label-sm text-label-sm bg-surface-container-low/40 p-space-xs px-space-sm rounded-xl">
+<label class="flex items-center gap-space-xs cursor-pointer select-none">
+<input class="accent-primary-container rounded w-4 h-4 cursor-pointer" id="selectAllCheckbox" onchange="toggleSelectAll(this)" type="checkbox"/>
+<span id="batch-control-title">Seleccionar todas (0 asignaciones activas)</span>
+</label>
+<div class="flex items-center gap-space-md">
+<span class="font-code-sm text-code-sm font-semibold" id="selectedCount">0 seleccionadas</span>
+<button class="text-primary hover:text-primary-container font-semibold transition-colors flex items-center gap-0.5" onclick="batchActionPrompt()" type="button">
+<span>Acción masiva</span>
+<span class="material-symbols-outlined text-sm">expand_more</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Task List Container -->
+<div class="flex flex-col gap-space-sm" id="tareas-lista">
+  <!-- DYNAMIC TASKS RENDERED HERE -->
+</div>
+
+<!-- Historical Velocity Inline SVG Trend Card -->
+<div class="bg-surface-container-lowest rounded-[2rem] p-space-lg shadow-sm flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-primary text-xl">trending_up</span>
+<h4 class="font-headline-sm text-headline-sm text-on-surface font-semibold">Velocidad de Resolución y Rendimiento (Últimos 6 Sprints)</h4>
+</div>
+<span class="font-code-sm text-code-sm text-on-surface-variant">Promedio: 23.6 SP/Sprint</span>
+</div>
+<!-- Inline Data Visualizer SVG Chart -->
+<div class="w-full h-40 relative flex items-end">
+<svg class="w-full h-full text-primary" fill="none" preserveaspectratio="none" viewbox="0 0 600 140">
+<!-- Grid Lines -->
+<line stroke="currentColor" stroke-dasharray="4 4" stroke-opacity="0.08" x1="0" x2="600" y1="35" y2="35"></line>
+<line stroke="currentColor" stroke-dasharray="4 4" stroke-opacity="0.08" x1="0" x2="600" y1="70" y2="70"></line>
+<line stroke="currentColor" stroke-dasharray="4 4" stroke-opacity="0.08" x1="0" x2="600" y1="105" y2="105"></line>
+<!-- Area Fill Under Curve -->
+<path d="M0,110 L100,85 L200,92 L300,50 L400,60 L500,28 L600,32 L600,140 L0,140 Z" fill="url(#velocityGradient)"></path>
+<!-- Trend Line -->
+<path d="M0,110 L100,85 L200,92 L300,50 L400,60 L500,28 L600,32" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"></path>
+<!-- Data Points -->
+<circle cx="100" cy="85" fill="white" r="4" stroke="currentColor" stroke-width="3"></circle>
+<circle cx="200" cy="92" fill="white" r="4" stroke="currentColor" stroke-width="3"></circle>
+<circle cx="300" cy="50" fill="white" r="4" stroke="currentColor" stroke-width="3"></circle>
+<circle cx="400" cy="60" fill="white" r="4" stroke="currentColor" stroke-width="3"></circle>
+<circle cx="500" cy="28" fill="#005338" r="5" stroke="white" stroke-width="2"></circle>
+<circle cx="600" cy="32" fill="white" r="4" stroke="currentColor" stroke-width="3"></circle>
+<defs>
+<lineargradient id="velocityGradient" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#4f46e5" stop-opacity="0.25"></stop>
+<stop offset="100%" stop-color="#4f46e5" stop-opacity="0.0"></stop>
+</lineargradient>
+</defs>
+</svg>
+</div>
+<div class="grid grid-cols-6 text-center font-code-sm text-code-sm text-on-surface-variant pt-space-xs">
+<span>Sprint 38 (18 SP)</span>
+<span>Sprint 39 (20 SP)</span>
+<span>Sprint 40 (26 SP)</span>
+<span>Sprint 41 (24 SP)</span>
+<span class="text-tertiary font-bold">Sprint 42 (31 SP)</span>
+<span>Sprint 43 (En curso)</span>
+</div>
+</div>
+</section>
+<!-- RIGHT SIDEBAR: WORKLOAD & PEERS (lg:col-span-4 ≈ 30%) -->
+<aside class="lg:col-span-4 flex flex-col gap-space-lg">
+<!-- Card: Balance de Carga y Disponibilidad -->
+<div class="bg-surface-container-lowest rounded-[2rem] p-space-lg shadow-sm">
+<div class="flex items-center justify-between pb-space-sm">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-primary text-xl">donut_large</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold">Balance de Carga</h3>
+</div>
+<span class="bg-surface-container text-primary font-code-sm text-code-sm px-space-xs py-0.5 rounded-full font-bold">35h / 40h</span>
+</div>
+<!-- Progress and Status -->
+<p class="font-body-sm text-body-sm text-on-surface-variant pb-space-md">
+          Capacidad de Sprint semanal. El colaborador tiene <strong id="kpi-horas-libres">5 horas libres</strong>.
+        </p>
+<!-- Donut / Hour Distribution SVG -->
+<div class="flex items-center justify-center py-space-sm relative">
+<svg class="w-40 h-40 -rotate-90 transform" viewbox="0 0 100 100">
+<circle class="text-surface-container-high" cx="50" cy="50" fill="transparent" r="40" stroke="currentColor" stroke-width="12"></circle>
+<circle class="transition-all duration-1000" id="capacity-ring-detalle" cx="50" cy="50" fill="transparent" r="40" stroke="#4f46e5" stroke-dasharray="251.3" stroke-dashoffset="31.4" stroke-linecap="round" stroke-width="12"></circle>
+<circle class="opacity-80 transition-all duration-1000" id="capacity-ring-critical" cx="50" cy="50" fill="transparent" r="40" stroke="#ba1a1a" stroke-dasharray="251.3" stroke-dashoffset="200" stroke-linecap="round" stroke-width="12"></circle>
+</svg>
+<div class="absolute flex flex-col items-center justify-center text-center">
+<span class="font-headline-lg text-headline-lg font-bold text-on-surface leading-none" id="capacity-pct-detalle">88%</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider pt-1">Ocupado</span>
+</div>
+</div>
+<!-- Weekly hours breakdown mini-bars -->
+<div class="flex flex-col gap-space-xs pt-space-md">
+<div class="flex items-center justify-between font-label-sm text-label-sm">
+<span class="text-on-surface-variant flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded-full bg-error"></span> Tareas Pendientes (<span id="kpi-minibar-p">0</span>)
+            </span>
+</div>
+<div class="flex items-center justify-between font-label-sm text-label-sm">
+<span class="text-on-surface-variant flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded-full bg-primary-container"></span> Desarrollo en Curso (<span id="kpi-minibar-e">0</span>)
+            </span>
+</div>
+<div class="flex items-center justify-between font-label-sm text-label-sm">
+<span class="text-on-surface-variant flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded-full bg-tertiary"></span> Completadas/Soporte (<span id="kpi-minibar-c">0</span>)
+            </span>
+</div>
+<div class="flex items-center justify-between font-label-sm text-label-sm pt-1">
+<span class="text-tertiary flex items-center gap-1.5 font-semibold">
+<span class="w-2.5 h-2.5 rounded-full bg-surface-container-high"></span> Horas Libres de Buffer
+            </span>
+<span class="font-code-sm text-code-sm font-bold text-tertiary" id="kpi-horas-buffer">5h</span>
+</div>
+</div>
+</div>
+
+<!-- Card: Colaboradores Frecuentes / Pares -->
+<div class="bg-surface-container-lowest rounded-[2rem] p-space-lg shadow-sm">
+<div class="flex items-center justify-between pb-space-xs">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-secondary text-xl">group_work</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold">Colaboradores Pares</h3>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Squad Core</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant pb-space-md">
+          Compañeros con contexto directo en el repositorio para balanceo rápido de sprint.
+        </p>
+<div class="flex flex-col gap-space-md" id="colaboradores-pares-list">
+  <!-- DYNAMIC PEERS LIST -->
+</div>
+</div>
+
+<!-- Card: Próximas Entregas Críticas con Contador Regresivo -->
+<div class="bg-surface-container-lowest rounded-[2rem] p-space-lg shadow-sm">
+<div class="flex items-center justify-between pb-space-sm">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-error text-xl">timelapse</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold">Entregas Críticas</h3>
+</div>
+<span class="font-label-sm text-label-sm bg-error-container text-on-error-container font-semibold px-space-xs py-0.5 rounded-full">SLA Riesgo</span>
+</div>
+<div class="flex flex-col gap-space-sm" id="entregas-criticas-list">
+<!-- DYNAMIC CRITICAL TASKS -->
+</div>
+</div>
+</aside>
+</div>
+</div>
+<script>
+  // Countdown simulation for critical SLA
+  (function initCountdown() {
+    let totalSeconds = 4 * 3600 + 28 * 60 + 10;
+    setInterval(() => {
+      if (totalSeconds <= 0) return;
+      totalSeconds--;
+      const hrs = Math.floor(totalSeconds / 3600);
+      const mins = Math.floor((totalSeconds % 3600) / 60);
+      const secs = totalSeconds % 60;
+      const timers = document.querySelectorAll('.countdown-dynamic');
+      timers.forEach(el => {
+        el.textContent = `${String(hrs).padStart(2, '0')}h ${String(mins).padStart(2, '0')}m ${String(secs).padStart(2, '0')}s`;
+      });
+    }, 1000);
+  })();
+
+  // Toast Trigger helper
+  function triggerToast(message) {
+    const toast = document.getElementById('toastNotification');
+    const msg = document.getElementById('toastMsg');
+    if (!toast || !msg) return;
+
+    msg.textContent = message;
+    toast.classList.remove('translate-y-24', 'opacity-0');
+    toast.classList.add('translate-y-0', 'opacity-100');
+
+    setTimeout(() => {
+      toast.classList.add('translate-y-24', 'opacity-0');
+      toast.classList.remove('translate-y-0', 'opacity-100');
+    }, 3200);
+  }
+
+  let currentTargetTask = 'TK-402';
+  function openReassignModal(taskCode) {
+    currentTargetTask = taskCode;
+    const modal = document.getElementById('reassignModal');
+    const codeSpan = document.getElementById('modalTaskCode');
+    if (codeSpan) codeSpan.textContent = `#${taskCode}`;
+    if (modal) {
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+  }
+
+  function closeReassignModal() {
+    const modal = document.getElementById('reassignModal');
+    if (modal) {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+  }
+
+  function confirmReassign() {
+    const selectedRadio = document.querySelector('input[name="targetMember"]:checked');
+    const targetName = selectedRadio ? selectedRadio.value : 'otro desarrollador';
+    closeReassignModal();
+    triggerToast(`Tarea #${currentTargetTask} reasignada con éxito a ${targetName}`);
+  }
+
+  function quickTransfer(peerName) {
+    openReassignModal('MULTIPLE');
+    const radios = document.querySelectorAll('input[name="targetMember"]');
+    radios.forEach(r => {
+      if (r.value === peerName) r.checked = true;
+    });
+  }
+
+  function toggleSelectAll(masterCheckbox) {
+    const checkboxes = document.querySelectorAll('.task-select-box');
+    checkboxes.forEach(cb => cb.checked = masterCheckbox.checked);
+    updateSelectedCount();
+  }
+
+  function updateSelectedCount() {
+    const checkboxes = document.querySelectorAll('.task-select-box');
+    const checkedCount = Array.from(checkboxes).filter(cb => cb.checked).length;
+    const label = document.getElementById('selectedCount');
+    if (label) {
+      label.textContent = `${checkedCount} seleccionadas`;
+    }
+    const selectAll = document.getElementById('selectAllCheckbox');
+    if (selectAll) {
+      selectAll.checked = (checkedCount === checkboxes.length && checkboxes.length > 0);
+    }
+  }
+
+  function batchActionPrompt() {
+    const checkedCount = Array.from(document.querySelectorAll('.task-select-box')).filter(cb => cb.checked).length;
+    if (checkedCount === 0) {
+      triggerToast('Selecciona al menos una tarea para ejecutar acciones masivas');
+    } else {
+      triggerToast(`Procesando lote para ${checkedCount} tareas seleccionadas`);
+    }
+  }
+
+  function filterTasks() {
+    const query = document.getElementById('taskSearchInput').value.toLowerCase();
+    const taskCards = document.querySelectorAll('.task-card');
+
+    taskCards.forEach(card => {
+      const title = (card.getAttribute('data-title') || '').toLowerCase();
+      const code = (card.getAttribute('data-code') || '').toLowerCase();
+      if (title.includes(query) || code.includes(query)) {
+        card.style.display = 'flex';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  }
+
+  function switchTab(btnElement, tabName) {
+    const allTabs = document.querySelectorAll('#tabContainer .tab-btn');
+    allTabs.forEach(btn => {
+      btn.className = 'tab-btn px-space-md py-space-xs rounded-xl font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low transition-all';
+    });
+    btnElement.className = 'tab-btn px-space-md py-space-xs rounded-xl font-label-md text-label-md font-semibold bg-primary-container text-on-primary transition-all shadow-sm';
+    
+    if (tabName !== 'assigned') {
+      triggerToast(`Vista cargada: ${btnElement.textContent.trim()}`);
+    }
+  }
+</script></main>
